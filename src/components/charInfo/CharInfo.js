@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import './charInfo.scss';
 import thor from '../../resources/img/thor.jpeg';
 
@@ -9,10 +10,10 @@ const CharInfo = () => {
                 <div>
                     <div className="char__info-name">thor</div>
                     <div className="char__btns">
-                        <a href="javascript:void(0)" className="button button__main">
+                        <a href="#" className="button button__main">
                             <div className="inner">homepage</div>
                         </a>
-                        <a href="javascript:void(0)" className="button button__secondary">
+                        <a href="#" className="button button__secondary">
                             <div className="inner">Wiki</div>
                         </a>
                     </div>
