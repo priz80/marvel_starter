@@ -46,6 +46,7 @@ class CharInfo extends Component {
   }
 
   render() {
+    //  this.foo.bar = 0;
     const { char, loading, error, imageError } = this.state;
     const errorMessage = error ? <ErrorMessage /> : null;
     const spinner = loading ? <Spinner /> : null;
