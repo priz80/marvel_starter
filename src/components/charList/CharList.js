@@ -10,7 +10,7 @@ class CharList extends Component {
     characters: [],
     loading: true,
     error: false,
-    imageError: {}, // { [name]: boolean }
+    imageError: {},
   };
 
   marvelService = new MarvelService();
