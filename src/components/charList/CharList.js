@@ -42,7 +42,11 @@ class CharList extends Component {
     const spinner = loading ? <Spinner /> : null;
 
     const charItems = characters.slice(0, 9).map((char) => (
-      <li className="char__item" key={char.name}>
+      <li
+        className="char__item"
+        key={char.id}
+        onClick={() => this.props.onCharSelected(char.id)}
+      >
         <img
           src={imageError[char.name] ? abyss : char.thumbnail}
           onError={() => this.onImageError(char.name)}
