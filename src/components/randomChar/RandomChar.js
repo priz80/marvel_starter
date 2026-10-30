@@ -18,7 +18,7 @@ class RandomChar extends Component {
   marvelService = new MarvelService();
 
   onCharLoaded = (char) => {
-    this.setState({ char, loading: false });
+    this.setState({ char, loading: false, imageError: false });
   };
   onCharLoading = (char) => {
     this.setState({ loading: true });
