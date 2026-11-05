@@ -37,6 +37,45 @@ class MarvelService {
       comics: char.comics.items,
     };
   };
+
+  getAllComics = async () => {
+    const res = await this.GetResource(
+      `${this._apiBase}/comics?${this._apiKey}`,
+    );
+    return res.data.results.map(this._transformComics);
+  };
+
+  getComic = async (id) => {
+    const res = await this.GetResource(
+      `${this._apiBase}/comics/${id}?${this._apiKey}`,
+    );
+    return this._transformComics(res.data.results[0]);
+  };
+
+  _transformComics = (comic) => {
+    return {
+      id: comic.id,
+      name: comic.title,
+      thumbnail: comic.thumbnail.path + "." + comic.thumbnail.extension,
+    };
+  };
+
+  // getComic = async (id) => {
+  //   const res = await this.GetResource(
+  //     `${this._apiBase}/comics/${id}?${this._apiKey}`,
+  //   );
+  //   return this._transformComics(res.data.results[0]);
+  // };
+
+  // _transformComics = (comic) => {
+  //   return {
+  //     id: comic.id,
+  //     name: comic.title,
+  //     description: comic.description || "",
+  //     thumbnail: comic.thumbnail.path + "." + comic.thumbnail.extension,
+  //   };
+  // };
 }
+
 
 export default MarvelService;

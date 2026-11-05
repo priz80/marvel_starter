@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AppHeader from "../appHeader/AppHeader";
-import { MainPages, ComicsPage } from "../pages";
+import { MainPages, ComicsPage, Page404, SingleComicPage } from "../pages";
 
 class App extends Component {
   render() {
@@ -12,8 +12,10 @@ class App extends Component {
 
           <main>
             <Routes>
-              <Route path="/comics" element={<ComicsPage />} />
               <Route path="/" element={<MainPages />} />
+              <Route path="/comics" element={<ComicsPage />} />
+              <Route path="/comics/:comicId" element={<SingleComicPage />} />
+              <Route path="*" element={<Page404 />} />
             </Routes>
           </main>
         </div>
