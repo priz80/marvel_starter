@@ -12,8 +12,8 @@ class App extends Component {
 
           <main>
             <Routes>
-              <Route exact path="/comics" element={<ComicsPage />} />
-              <Route exact path="/" element={<MainPages />} />
+              <Route path="/comics" element={<ComicsPage />} />
+              <Route path="/" element={<MainPages />} />
             </Routes>
           </main>
         </div>
