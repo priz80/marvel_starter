@@ -6,7 +6,7 @@ import { MainPages, ComicsPage } from "../pages";
 class App extends Component {
   render() {
     return (
-      <Router>
+      <Router basename="/marvel_starter">
         <div className="app">
           <AppHeader />
 
