@@ -59,22 +59,6 @@ class MarvelService {
       thumbnail: comic.thumbnail.path + "." + comic.thumbnail.extension,
     };
   };
-
-  // getComic = async (id) => {
-  //   const res = await this.GetResource(
-  //     `${this._apiBase}/comics/${id}?${this._apiKey}`,
-  //   );
-  //   return this._transformComics(res.data.results[0]);
-  // };
-
-  // _transformComics = (comic) => {
-  //   return {
-  //     id: comic.id,
-  //     name: comic.title,
-  //     description: comic.description || "",
-  //     thumbnail: comic.thumbnail.path + "." + comic.thumbnail.extension,
-  //   };
-  // };
 }
 
 
