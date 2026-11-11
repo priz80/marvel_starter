@@ -1,40 +1,47 @@
-import { Component } from "react";
+import { useState } from "react";
+import { Helmet } from "react-helmet";
+
 import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
 import CharInfo from "../charInfo/CharInfo";
+import CharSearchForm from "../charSearchForm/CharSearchForm";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
 import decoration from "../../resources/img/vision.png";
 
-class MainPage extends Component {
-  state = {
-    selectedChar: 1,
-  };
+// const [selectedChar, setChar] = useState(0); // или любой другой ID
 
-  onCharSelected = (id) => {
-    this.setState({ selectedChar: id });
-  };
+const MainPage = () => {
+  const [selectedChar, setChar] = useState(1);
 
-  render() {
-    return (
-      <>
+  const onCharSelected = (id) => {
+    setChar(id);
+  };
+  return (
+    <>
+      <Helmet>
+        <meta name="description" content="Marvel information portal" />
+        <title>Marvel information portal</title>
+      </Helmet>
+      <ErrorBoundary>
+        <RandomChar />
+      </ErrorBoundary>
+      <div className="char__content">
         <ErrorBoundary>
-          <RandomChar />
+          <CharList onCharSelected={onCharSelected} />
         </ErrorBoundary>
-
-        <div className="char__content">
+        <div>
           <ErrorBoundary>
-            <CharList onCharSelected={this.onCharSelected} />
+            <CharInfo charId={selectedChar} />
           </ErrorBoundary>
-
           <ErrorBoundary>
-            <CharInfo charId={this.state.selectedChar} />
+            <CharSearchForm />
           </ErrorBoundary>
         </div>
-        <img className="bg-decoration" src={decoration} alt="vision" />
-      </>
-    );
-  }
-}
+      </div>
+      <img className="bg-decoration" src={decoration} alt="vision" />
+    </>
+  );
+};
 
 export default MainPage;
