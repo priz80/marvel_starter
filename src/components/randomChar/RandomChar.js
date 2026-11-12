@@ -3,13 +3,12 @@ import "./randomChar.scss";
 import useMarvelService from "../../services/MarvelService";
 import mjolnir from "../../resources/img/mjolnir.png";
 import Spinner from "../spinner/Spinner";
-import ErrorMessage from "../errorMessage/ErrorMessage";
 import abyss from "../../resources/img/abyss.jpg";
 
 const RandomChar = () => {
   const [char, setChar] = useState({});
   const [imageError, setImageError] = useState(false);
-  const { getCharacter, process } = useMarvelService();
+  const { getCharacter } = useMarvelService();
 
   const updateChar = () => {
     const id = Math.floor(Math.random() * 20) + 1;
@@ -21,17 +20,14 @@ const RandomChar = () => {
 
   useEffect(() => {
     updateChar();
-  }, []);
-
-  const isProcessError = process === "error";
+  }, [updateChar]);
 
   return (
     <div className="randomchar">
-      {isProcessError && <ErrorMessage />}
-      {process !== "loading" && !isProcessError ? (
+      {char.name ? (
         <View char={char} imageError={imageError} onImageError={() => setImageError(true)} />
       ) : null}
-      {process === "loading" && <Spinner />}
+      <Spinner />
       <div className="randomchar__static">
         <p className="randomchar__title">
           Random character for today!

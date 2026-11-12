@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import "./charList.scss";
 import useMarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
-import ErrorMessage from "../errorMessage/ErrorMessage";
 import abyss from "../../resources/img/abyss.jpg";
 
 const CharList = ({ onCharSelected }) => {
@@ -11,7 +10,7 @@ const CharList = ({ onCharSelected }) => {
   const [offset, setOffset] = useState(9);
   const [limit] = useState(9);
   const [loadingMore, setLoadingMore] = useState(false);
-  const { getAllCharacters, process } = useMarvelService();
+  const { getAllCharacters } = useMarvelService();
 
   const onImageError = (name) => {
     setImageError((prev) => ({ ...prev, [name]: true }));
@@ -34,9 +33,7 @@ const CharList = ({ onCharSelected }) => {
     getAllCharacters(0, limit)
       .then(setCharacters)
       .catch(() => {});
-  }, []);
-
-  const isProcessLoading = process === "loading";
+  }, [getAllCharacters, limit]);
 
   const charItems = characters.map((char) => (
     <li
@@ -55,7 +52,6 @@ const CharList = ({ onCharSelected }) => {
 
   return (
     <div className="char__list">
-      {isProcessLoading && <Spinner />}
       <ul className="char__grid">{charItems}</ul>
       {loadingMore && <Spinner />}
       <button

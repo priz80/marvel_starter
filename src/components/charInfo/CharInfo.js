@@ -3,27 +3,25 @@ import "./charInfo.scss";
 import abyss from "../../resources/img/abyss.jpg";
 import useMarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
-import ErrorMessage from "../errorMessage/ErrorMessage";
 
 const CharInfo = ({ charId }) => {
   const [char, setChar] = useState(null);
   const [imgSrc, setImgSrc] = useState(abyss);
-  const { getCharacter, process } = useMarvelService();
+  const { getCharacter } = useMarvelService();
 
   useEffect(() => {
     if (!charId) return;
     getCharacter(charId).then((data) => {
       setChar(data);
-      
       if (data.thumbnail && data.thumbnail.startsWith("http")) {
         setImgSrc(abyss);
       } else {
         setImgSrc(data.thumbnail);
       }
     });
-  }, [charId]);
+  }, [charId, getCharacter]);
 
-  const isProcessLoading = process === "loading";
+  const isProcessLoading = false;
 
   if (!char) {
     return (

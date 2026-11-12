@@ -6,13 +6,11 @@ import Spinner from "../spinner/Spinner";
 
 const ComicsList = () => {
   const [comics, setComics] = useState([]);
-  const { getAllComics, process } = useMarvelService();
+  const { getAllComics } = useMarvelService();
 
   useEffect(() => {
     getAllComics().then(setComics);
-  }, []);
-
-  const isProcessLoading = process === "loading";
+  }, [getAllComics]);
 
   const comicItems = comics.map((comic) => (
     <li className="comics__item" key={comic.id}>
@@ -29,7 +27,7 @@ const ComicsList = () => {
 
   return (
     <div className="comics__list">
-      {isProcessLoading && <Spinner />}
+      <Spinner />
       <ul className="comics__grid">{comicItems}</ul>
     </div>
   );
