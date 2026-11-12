@@ -18,7 +18,7 @@ const SinglePage = ({ Component, dataType }) => {
     clearError();
     setData(null);
     setLoading(true);
-// console.log(id, dataType);
+
     switch (dataType) {
       case "comic":
         getComic(charId)
@@ -45,7 +45,7 @@ const SinglePage = ({ Component, dataType }) => {
       default:
         return;
     }
-  }, [charId, dataType]);
+  }, [charId, dataType, clearError, getCharacter, getComic]);
 
   if (error) return <ErrorMessage />;
   if (loading) return <Spinner />;
