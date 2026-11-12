@@ -71,7 +71,7 @@ const useMarvelService = () => {
         ),
       );
     },
-    [],
+    [request],
   );
 
   const getAllCharacters = useCallback(
