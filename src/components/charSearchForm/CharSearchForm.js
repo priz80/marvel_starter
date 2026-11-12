@@ -25,7 +25,9 @@ const CharSearchForm = () => {
     clearError();
     setCharacters(null);
 
-    getCharacterByName(name).then(onCharLoaded);
+    getCharacterByName(name)
+      .then(onCharLoaded)
+      .catch(() => setCharacters([]));
   };
 
   const errorMessage = process === "error" ? (

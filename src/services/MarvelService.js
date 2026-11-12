@@ -3,7 +3,6 @@ import { useHttp } from "../hooks/http.hook";
 
 const _apiBase = "https://marvel-server-zeta.vercel.app";
 const _apiKey = "apikey=d4eecb0c66dedbfae4eab45d312fc1df";
-let _allCharactersCache = null;
 
 const _transformCharacters = (char) => {
   return {
@@ -41,7 +40,7 @@ const useMarvelService = () => {
     (id) =>
       request(
         `${_apiBase}/characters/${id}?${_apiKey}`,
-      ).then((res) => _transformCharacters(res.data.results[0])),
+      ).then((res) => _transformCharacters(res.data?.results?.[0] || res.results?.[0])),
     [request],
   );
 
@@ -49,28 +48,20 @@ const useMarvelService = () => {
     (id) =>
       request(
         `${_apiBase}/comics/${id}?${_apiKey}`,
-      ).then((res) => _transformComics(res.data.results[0])),
+      ).then((res) => _transformComics(res.data?.results?.[0] || res.results?.[0])),
     [request],
   );
 
   const getCharacterByName = useCallback(
-    (name) => {
-      if (!_allCharactersCache) {
-        return request(
-          `${_apiBase}/characters?${_apiKey}&limit=100`,
-        ).then((res) => {
-          _allCharactersCache = res.data.results.map(_transformCharacters);
-          return _allCharactersCache.filter(
-            (char) => char.name.toLowerCase() === name.toLowerCase(),
-          );
-        });
-      }
-      return Promise.resolve(
-        _allCharactersCache.filter(
-          (char) => char.name.toLowerCase() === name.toLowerCase(),
-        ),
-      );
-    },
+    (name) =>
+      request(
+        `${_apiBase}/characters?nameStartsWith=${name}&${_apiKey}`,
+      )
+        .then((res) => {
+          const results = res.data?.results || res.results || [];
+          return results.map(_transformCharacters);
+        })
+        .catch(() => []),
     [request],
   );
 
@@ -78,7 +69,10 @@ const useMarvelService = () => {
     (offset = 0, limit = 20) =>
       request(
         `${_apiBase}/characters?${_apiKey}&limit=${limit}&offset=${offset}`,
-      ).then((res) => res.data.results.map(_transformCharacters)),
+      ).then((res) => {
+        const results = res.data?.results || res.results || [];
+        return results.map(_transformCharacters);
+      }),
     [request],
   );
 
@@ -86,7 +80,10 @@ const useMarvelService = () => {
     () =>
       request(
         `${_apiBase}/comics?${_apiKey}`,
-      ).then((res) => res.data.results.map(_transformComics)),
+      ).then((res) => {
+        const results = res.data?.results || res.results || [];
+        return results.map(_transformComics);
+      }),
     [request],
   );
 

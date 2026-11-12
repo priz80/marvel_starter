@@ -3,19 +3,30 @@ import "./randomChar.scss";
 import useMarvelService from "../../services/MarvelService";
 import mjolnir from "../../resources/img/mjolnir.png";
 import Spinner from "../spinner/Spinner";
+import ErrorMessage from "../errorMessage/ErrorMessage";
 import abyss from "../../resources/img/abyss.jpg";
 
 const RandomChar = () => {
   const [char, setChar] = useState({});
   const [imageError, setImageError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const { getCharacter } = useMarvelService();
 
   const updateChar = useCallback(() => {
+    setLoading(true);
+    setError(false);
     const id = Math.floor(Math.random() * 20) + 1;
-    getCharacter(id).then((data) => {
-      setChar(data);
-      setImageError(false);
-    });
+    getCharacter(id)
+      .then((data) => {
+        setChar(data);
+        setImageError(false);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
+        setLoading(false);
+      });
   }, [getCharacter]);
 
   useEffect(() => {
@@ -24,10 +35,12 @@ const RandomChar = () => {
 
   return (
     <div className="randomchar">
-      {char.name ? (
+      {error && <ErrorMessage />}
+      {loading ? (
+        <Spinner />
+      ) : (
         <View char={char} imageError={imageError} onImageError={() => setImageError(true)} />
-      ) : null}
-      <Spinner />
+      )}
       <div className="randomchar__static">
         <p className="randomchar__title">
           Random character for today!

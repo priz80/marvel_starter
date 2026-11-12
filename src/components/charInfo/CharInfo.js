@@ -6,38 +6,41 @@ import Spinner from "../spinner/Spinner";
 
 const CharInfo = ({ charId }) => {
   const [char, setChar] = useState(null);
-  const [imgSrc, setImgSrc] = useState(abyss);
+  const [loading, setLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
   const { getCharacter } = useMarvelService();
 
   useEffect(() => {
     if (!charId) return;
-    getCharacter(charId).then((data) => {
-      setChar(data);
-      if (data.thumbnail && data.thumbnail.startsWith("http")) {
-        setImgSrc(abyss);
-      } else {
-        setImgSrc(data.thumbnail);
-      }
-    });
+    setLoading(true);
+    getCharacter(charId)
+      .then((data) => {
+        setChar(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, [charId, getCharacter]);
 
-  const isProcessLoading = false;
-
-  if (!char) {
+  if (loading) {
     return (
       <div className="char__info">
-        {isProcessLoading && <Spinner />}
+        <Spinner />
       </div>
     );
   }
 
-  const { name, description, homepage, wiki, comics } = char;
+  if (!char) {
+    return <div className="char__info">No character found</div>;
+  }
+
+  const { name, description, thumbnail, homepage, wiki, comics } = char;
 
   return (
     <div className="char__info">
       <div className="char__basics">
         <img
-          src={imgSrc}
+          src={imageError ? abyss : thumbnail}
+          onError={() => setImageError(true)}
           alt={name}
         />
         <div>
