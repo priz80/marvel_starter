@@ -54,10 +54,19 @@ class MarvelService {
   };
 
   _transformComics = (comic) => {
+    const thumbnail = comic.thumbnail
+      ? comic.thumbnail.path + "." + comic.thumbnail.extension
+      : "";
+
     return {
       id: comic.id,
       name: comic.title,
-      thumbnail: comic.thumbnail.path + "." + comic.thumbnail.extension,
+      title: comic.title,
+      description: comic.description || "",
+      pageCount: comic.pageCount || 0,
+      thumbnail,
+      language: comic.retailerDate || "N/A",
+      price: comic.prices?.[0]?.price || null,
     };
   };
 

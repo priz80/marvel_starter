@@ -22,6 +22,21 @@ const useMarvelService = () => {
       });
   }, []);
 
+  const getComic = useCallback((id) => {
+    setLoading(true);
+    setError(false);
+    return marvelService
+      .getComic(id)
+      .then((data) => {
+        setLoading(false);
+        return data;
+      })
+      .catch(() => {
+        setLoading(false);
+        setError(true);
+      });
+  }, []);
+
   const getCharacterByName = useCallback((name) => {
     setLoading(true);
     setError(false);
@@ -39,7 +54,7 @@ const useMarvelService = () => {
 
   const clearError = useCallback(() => setError(false), []);
 
-  return { loading, error, getCharacter, getCharacterByName, clearError };
+  return { loading, error, getCharacter, getComic, getCharacterByName, clearError };
 };
 
 export default useMarvelService;
