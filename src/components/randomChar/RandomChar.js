@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "./randomChar.scss";
 import useMarvelService from "../../services/MarvelService";
 import mjolnir from "../../resources/img/mjolnir.png";
@@ -10,13 +10,13 @@ const RandomChar = () => {
   const [imageError, setImageError] = useState(false);
   const { getCharacter } = useMarvelService();
 
-  const updateChar = () => {
+  const updateChar = useCallback(() => {
     const id = Math.floor(Math.random() * 20) + 1;
     getCharacter(id).then((data) => {
       setChar(data);
       setImageError(false);
     });
-  };
+  }, [getCharacter]);
 
   useEffect(() => {
     updateChar();
