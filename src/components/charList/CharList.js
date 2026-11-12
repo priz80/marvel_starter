@@ -1,98 +1,71 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import "./charList.scss";
-import { MarvelService } from "../../services/MarvelService";
+import useMarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import abyss from "../../resources/img/abyss.jpg";
 
-class CharList extends Component {
-  state = {
-    characters: [],
-    loading: true,
-    error: false,
-    imageError: {},
-    offset: 9,
-    limit: 9,
-    loadingMore: false,
+const CharList = ({ onCharSelected }) => {
+  const [characters, setCharacters] = useState([]);
+  const [imageError, setImageError] = useState({});
+  const [offset, setOffset] = useState(9);
+  const [limit] = useState(9);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const { getAllCharacters, process } = useMarvelService();
+
+  const onImageError = (name) => {
+    setImageError((prev) => ({ ...prev, [name]: true }));
   };
 
-  marvelService = new MarvelService();
-
-  onCharactersLoaded = (characters) => {
-    this.setState({ characters, loading: false });
-  };
-
-  onError = () => {
-    this.setState({ loading: false, error: true });
-  };
-
-  onImageError = (name) => {
-    this.setState((prev) => ({
-      imageError: { ...prev.imageError, [name]: true },
-    }));
-  };
-
-  onLoadMore = () => {
-    const { offset, limit, loadingMore } = this.state;
+  const onLoadMore = () => {
     if (loadingMore) return;
+    setLoadingMore(true);
 
-    this.setState({ loadingMore: true });
-
-    this.marvelService
-      .getAllCharacters(offset, limit)
+    getAllCharacters(offset, limit)
       .then((newCharacters) => {
-        this.setState((prev) => ({
-          characters: [...prev.characters, ...newCharacters],
-          offset: prev.offset + prev.limit,
-          loadingMore: false,
-        }));
+        setCharacters((prev) => [...prev, ...newCharacters]);
+        setOffset((prev) => prev + limit);
+        setLoadingMore(false);
       })
-      .catch(this.onError);
+      .catch(() => setLoadingMore(false));
   };
 
-  componentDidMount() {
-    this.marvelService
-      .getAllCharacters(0, 9)
-      .then(this.onCharactersLoaded)
-      .catch(this.onError);
-  }
+  useEffect(() => {
+    getAllCharacters(0, limit)
+      .then(setCharacters)
+      .catch(() => {});
+  }, []);
 
-  render() {
-    const { characters, loading, error, imageError, loadingMore } = this.state;
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const moreSpinner = loadingMore ? <Spinner /> : null;
+  const isProcessLoading = process === "loading";
 
-    const charItems = characters.map((char) => (
-      <li
-        className="char__item"
-        key={char.id}
-        onClick={() => this.props.onCharSelected(char.id)}
+  const charItems = characters.map((char) => (
+    <li
+      className="char__item"
+      key={char.id}
+      onClick={() => onCharSelected(char.id)}
+    >
+      <img
+        src={imageError[char.name] ? abyss : char.thumbnail}
+        onError={() => onImageError(char.name)}
+        alt={char.name}
+      />
+      <div className="char__name">{char.name}</div>
+    </li>
+  ));
+
+  return (
+    <div className="char__list">
+      {isProcessLoading && <Spinner />}
+      <ul className="char__grid">{charItems}</ul>
+      {loadingMore && <Spinner />}
+      <button
+        className="button button__main button__long"
+        onClick={onLoadMore}
       >
-        <img
-          src={imageError[char.name] ? abyss : char.thumbnail}
-          onError={() => this.onImageError(char.name)}
-          alt={char.name}
-        />
-        <div className="char__name">{char.name}</div>
-      </li>
-    ));
-
-    return (
-      <div className="char__list">
-        {errorMessage}
-        {spinner}
-        <ul className="char__grid">{charItems}</ul>
-        {moreSpinner}
-        <button
-          className="button button__main button__long"
-          onClick={this.onLoadMore}
-        >
-          <div className="inner">load more</div>
-        </button>
-      </div>
-    );
-  }
-}
+        <div className="inner">load more</div>
+      </button>
+    </div>
+  );
+};
 
 export default CharList;

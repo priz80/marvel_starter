@@ -1,86 +1,52 @@
-import { Component } from "react";
-
+import { useState, useEffect } from "react";
 import "./randomChar.scss";
-import { MarvelService } from "../../services/MarvelService";
+import useMarvelService from "../../services/MarvelService";
 import mjolnir from "../../resources/img/mjolnir.png";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import abyss from "../../resources/img/abyss.jpg";
 
-class RandomChar extends Component {
-  state = {
-    char: {},
-    loading: true,
-    error: false,
-    imageError: false,
-  };
+const RandomChar = () => {
+  const [char, setChar] = useState({});
+  const [imageError, setImageError] = useState(false);
+  const { getCharacter, process } = useMarvelService();
 
-  marvelService = new MarvelService();
-
-  onCharLoaded = (char) => {
-    this.setState({ char, loading: false, imageError: false });
-  };
-  onCharLoading = (char) => {
-    this.setState({ loading: true });
-  };
-
-  onError = () => {
-    this.setState({
-      loading: false,
-      error: true,
+  const updateChar = () => {
+    const id = Math.floor(Math.random() * 20) + 1;
+    getCharacter(id).then((data) => {
+      setChar(data);
+      setImageError(false);
     });
   };
 
-  onImageError = () => {
-    this.setState({ imageError: true });
-  };
+  useEffect(() => {
+    updateChar();
+  }, []);
 
-  updateChar = () => {
-    const id = Math.floor(Math.random() * 20) + 1;
-    this.onCharLoading();
-    this.marvelService
-      .getCharacter(id)
-      .then(this.onCharLoaded)
-      .catch(this.onError);
-  };
+  const isProcessError = process === "error";
 
-  componentDidMount() {
-    this.updateChar();
-  }
-
-  render() {
-    const { char, loading, error, imageError } = this.state;
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error) ? (
-      <View
-        char={char}
-        imageError={imageError}
-        onImageError={this.onImageError}
-      />
-    ) : null;
-
-    return (
-      <div className="randomchar">
-        {errorMessage}
-        {content}
-        {spinner}
-        <div className="randomchar__static">
-          <p className="randomchar__title">
-            Random character for today!
-            <br />
-            Do you want to get to know him better?
-          </p>
-          <p className="randomchar__title">Or choose another one</p>
-          <button className="button button__main" onClick={this.updateChar}>
-            <div className="inner">try it</div>
-          </button>
-          <img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
-        </div>
+  return (
+    <div className="randomchar">
+      {isProcessError && <ErrorMessage />}
+      {process !== "loading" && !isProcessError ? (
+        <View char={char} imageError={imageError} onImageError={() => setImageError(true)} />
+      ) : null}
+      {process === "loading" && <Spinner />}
+      <div className="randomchar__static">
+        <p className="randomchar__title">
+          Random character for today!
+          <br />
+          Do you want to get to know him better?
+        </p>
+        <p className="randomchar__title">Or choose another one</p>
+        <button className="button button__main" onClick={updateChar}>
+          <div className="inner">try it</div>
+        </button>
+        <img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 const View = ({ char, imageError, onImageError }) => {
   const { name, description, thumbnail, homepage, wiki } = char;
