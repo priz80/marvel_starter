@@ -10,42 +10,23 @@ const SinglePage = ({ Component, dataType }) => {
   const { comicId, id } = useParams();
   const charId = id || comicId;
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const { getComic, getCharacter, clearError } = useMarvelService();
+  const { getComic, getCharacter, clearError, loading, error } = useMarvelService();
 
   useEffect(() => {
     clearError();
     setData(null);
-    setLoading(true);
 
     switch (dataType) {
       case "comic":
-        getComic(charId)
-          .then((data) => {
-            setData(data);
-            setLoading(false);
-          })
-          .catch(() => {
-            setLoading(false);
-            setError(true);
-          });
+        getComic(charId).then((data) => setData(data));
         break;
       case "character":
-        getCharacter(charId)
-          .then((data) => {
-            setData(data);
-            setLoading(false);
-          })
-          .catch(() => {
-            setLoading(false);
-            setError(true);
-          });
+        getCharacter(charId).then((data) => setData(data));
         break;
       default:
         return;
     }
-  }, [charId, dataType, clearError, getCharacter, getComic]);
+  }, [charId, dataType, getComic, getCharacter, clearError]);
 
   if (error) return <ErrorMessage />;
   if (loading) return <Spinner />;

@@ -15,8 +15,7 @@ import "./charSearchForm.scss";
 
 const CharSearchForm = () => {
   const [characters, setCharacters] = useState(null);
-  const { loading, error, getCharacterByName, clearError } =
-    useMarvelService();
+  const { loading, error, getCharacterByName, clearError } = useMarvelService();
 
   const onCharLoaded = (chars) => {
     setCharacters(chars);
@@ -26,9 +25,7 @@ const CharSearchForm = () => {
     clearError();
     setCharacters(null);
 
-    getCharacterByName(name)
-      .then(onCharLoaded)
-      .catch(() => {});
+    getCharacterByName(name).then(onCharLoaded);
   };
 
   const errorMessage = error ? (
@@ -36,23 +33,25 @@ const CharSearchForm = () => {
       <ErrorMessage />
     </div>
   ) : null;
-  const results = !characters ? null : characters.length > 0 ? (
-    <div className="char__search-wrapper">
-      <div className="char__search-success">
-        Found: {characters[0].name}
+  const results = !characters
+    ? null
+    : characters.length > 0 ? (
+      <div className="char__search-wrapper">
+        <div className="char__search-success">
+          Found: {characters[0].name}
+        </div>
+        <Link
+          to={`/characters/${characters[0].id}`}
+          className="button button__main"
+        >
+          <div className="inner">Go to page</div>
+        </Link>
       </div>
-      <Link
-        to={`/characters/${characters[0].id}`}
-        className="button button__main"
-      >
-        <div className="inner">Go to page</div>
-      </Link>
-    </div>
-  ) : (
-    <div className="char__search-error">
-      The character was not found. Check the name and try again
-    </div>
-  );
+    ) : (
+      <div className="char__search-error">
+        The character was not found. Check the name and try again
+      </div>
+    );
 
   return (
     <div className="char__search-form">

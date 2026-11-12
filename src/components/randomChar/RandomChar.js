@@ -1,7 +1,7 @@
 import { Component } from "react";
 
 import "./randomChar.scss";
-import MarvelService from "../../services/MarvelServices";
+import { MarvelService } from "../../services/MarvelService";
 import mjolnir from "../../resources/img/mjolnir.png";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
@@ -36,7 +36,6 @@ class RandomChar extends Component {
   };
 
   updateChar = () => {
-    // this.setState({ loading: true, error: false });
     const id = Math.floor(Math.random() * 20) + 1;
     this.onCharLoading();
     this.marvelService

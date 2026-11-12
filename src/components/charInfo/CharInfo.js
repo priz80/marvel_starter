@@ -1,7 +1,7 @@
 import { Component } from "react";
 import "./charInfo.scss";
 import abyss from "../../resources/img/abyss.jpg";
-import MarvelService from "../../services/MarvelServices";
+import { MarvelService } from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 
@@ -46,7 +46,6 @@ class CharInfo extends Component {
   }
 
   render() {
-    //  this.foo.bar = 0;
     const { char, loading, error, imageError } = this.state;
     const errorMessage = error ? <ErrorMessage /> : null;
     const spinner = loading ? <Spinner /> : null;
