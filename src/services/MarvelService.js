@@ -4,6 +4,8 @@ import { useHttp } from "../hooks/http.hook";
 const _apiBase = "https://marvel-server-zeta.vercel.app";
 const _apiKey = "apikey=d4eecb0c66dedbfae4eab45d312fc1df";
 
+let _allCharactersCache = null;
+
 const _transformCharacters = (char) => {
   return {
     id: char.id,
@@ -53,16 +55,25 @@ const useMarvelService = () => {
   );
 
   const getCharacterByName = useCallback(
-    (name) =>
-      request(
-        `${_apiBase}/characters?nameStartsWith=${name}&${_apiKey}`,
-      )
-        .then((res) => {
+    (name) => {
+      if (!_allCharactersCache) {
+        return request(
+          `${_apiBase}/characters?${_apiKey}&limit=100`,
+        ).then((res) => {
           const results = res.data?.results || res.results || [];
-          return results.map(_transformCharacters);
-        })
-        .catch(() => []),
-    [request],
+          _allCharactersCache = results.map(_transformCharacters);
+          return _allCharactersCache.filter(
+            (char) => char.name.toLowerCase() === name.toLowerCase(),
+          );
+        });
+      }
+      return Promise.resolve(
+        _allCharactersCache.filter(
+          (char) => char.name.toLowerCase() === name.toLowerCase(),
+        ),
+      );
+    },
+    [],
   );
 
   const getAllCharacters = useCallback(
